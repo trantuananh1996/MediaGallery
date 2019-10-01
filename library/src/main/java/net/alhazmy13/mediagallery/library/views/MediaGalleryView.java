@@ -3,11 +3,12 @@ package net.alhazmy13.mediagallery.library.views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import net.alhazmy13.mediagallery.library.R;
 import net.alhazmy13.mediagallery.library.views.adapter.GridImagesAdapter;
@@ -61,7 +62,7 @@ public class MediaGalleryView extends RecyclerView {
         mWidth = a.getDimensionPixelSize(R.styleable.MediaGalleryView_image_width, DEFAULT);
         mHeight = a.getDimensionPixelSize(R.styleable.MediaGalleryView_image_height, DEFAULT);
         if (mPlaceHolder == null) {
-            mPlaceHolder = ContextCompat.getDrawable(mContext, R.drawable.media_gallery_placeholder);
+            mPlaceHolder = AppCompatResources.getDrawable(mContext, R.drawable.media_gallery_placeholder);
         }
         init();
 
@@ -72,7 +73,9 @@ public class MediaGalleryView extends RecyclerView {
      */
     public void init() {
         mDataset = new ArrayList<>();
-        mAdapter = new GridImagesAdapter(mContext, mDataset, mPlaceHolder);
+        //TODO:
+        String auth = "";
+        mAdapter = new GridImagesAdapter(mContext, mDataset, mPlaceHolder,auth);
         setOrientation(mOrientation);
         mAdapter.setImageSize(mWidth, mHeight);
         setAdapter(mAdapter);
@@ -105,7 +108,7 @@ public class MediaGalleryView extends RecyclerView {
      * @param placeHolder the place holder
      */
     public void setPlaceHolder(int placeHolder) {
-        this.mPlaceHolder = ContextCompat.getDrawable(mContext, placeHolder);
+        this.mPlaceHolder = AppCompatResources.getDrawable(mContext, placeHolder);
         mAdapter.setImgPlaceHolder(mPlaceHolder);
     }
 
@@ -138,9 +141,9 @@ public class MediaGalleryView extends RecyclerView {
     public void setOrientation(int orientation) {
         this.mOrientation = orientation;
         if (orientation == HORIZONTAL) {
-            setLayoutManager(new GridLayoutManager(mContext, mSpanCount, GridLayoutManager.HORIZONTAL, false));
+            setLayoutManager(new GridLayoutManager(mContext, mSpanCount, RecyclerView.HORIZONTAL, false));
         } else if (orientation == VERTICAL) {
-            setLayoutManager(new GridLayoutManager(mContext, mSpanCount, GridLayoutManager.VERTICAL, false));
+            setLayoutManager(new GridLayoutManager(mContext, mSpanCount, RecyclerView.VERTICAL, false));
 
         }
     }

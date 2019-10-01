@@ -3,29 +3,34 @@ package net.alhazmy13.mediagallery.library.activity.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.v4.view.PagerAdapter;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.PagerAdapter;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.github.chrisbanes.photoview.PhotoView;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import net.alhazmy13.mediagallery.library.BottomViewContainer;
 import net.alhazmy13.mediagallery.library.R;
 import net.alhazmy13.mediagallery.library.Utility;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.ArrayList;
-
-import uk.co.senab.photoview.PhotoViewAttacher;
 
 
 /**
@@ -36,25 +41,32 @@ public class ViewPagerAdapter extends PagerAdapter {
     private Activity activity;
     private LayoutInflater mLayoutInflater;
     private ArrayList<String> mDataSet;
-    private PhotoViewAttacher mPhotoViewAttacher;
     private boolean isShowing = true;
-    private Toolbar toolbar;
-    private RecyclerView imagesHorizontalList;
-    private ImageView imageView;
+    private RelativeLayout bottomView;
+    private PhotoView imageView;
+    private View topView;
+    private BottomViewContainer bottomViewContainer;
+    String auth;
+    RecyclerView imagesHorizontalList;
 
     /**
      * Instantiates a new View pager adapter.
      *
      * @param activity             the activity
      * @param dataSet              the images
-     * @param toolbar              the toolbar
-     * @param imagesHorizontalList the images horizontal list
+     * @param bottomView           the images horizontal list
+     * @param bottomViewContainer
+     * @param imagesHorizontalList
+     * @param auth
      */
-    public ViewPagerAdapter(Activity activity, ArrayList<String> dataSet, Toolbar toolbar, RecyclerView imagesHorizontalList) {
+    public ViewPagerAdapter(Activity activity, ArrayList<String> dataSet, RelativeLayout bottomView, View topView, BottomViewContainer bottomViewContainer, RecyclerView imagesHorizontalList, String auth) {
         this.activity = activity;
         mLayoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.mDataSet = dataSet;
-        this.toolbar = toolbar;
+        this.bottomView = bottomView;
+        this.topView = topView;
+        this.bottomViewContainer = bottomViewContainer;
+        this.auth = auth;
         this.imagesHorizontalList = imagesHorizontalList;
     }
 
@@ -64,60 +76,68 @@ public class ViewPagerAdapter extends PagerAdapter {
     }
 
     @Override
-    public boolean isViewFromObject(View view, Object object) {
-        return view == ((RelativeLayout) object);
+    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+        return view == object;
     }
 
+    @NonNull
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
         View itemView = mLayoutInflater.inflate(R.layout.pager_item, container, false);
         String o = mDataSet.get(position);
+        Log.e("Image loading", o);
         boolean isImageValid;
-        imageView = (ImageView) itemView.findViewById(R.id.iv);
-
+        imageView = itemView.findViewById(R.id.iv);
+        if (bottomViewContainer != null)
+            imageView.setRotation(bottomViewContainer.getImageRotation(position));
+        onTap();
         if (Utility.isValidURL(o)) {
-            Glide.with(activity)
-                    .load(String.valueOf(mDataSet.get(position)))
-                    .listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            onTap();
-                            return false;
-                        }
-                    }).into(imageView);
+            RequestBuilder<Drawable> option = Glide.with(activity)
+                    .load(Utility.getAuthorizedUrl(String.valueOf(mDataSet.get(position)), auth));
+            if (o.contains("gs://")) {
+                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(o);
+                option = Glide.with(activity)
+                        .load(storageRef);
+            }
+            try {
+                option = option.apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC));
+            } catch (NoSuchMethodError ignored) {
+            }
+            option.into(imageView);
+            isImageValid = true;
+        } else if (Utility.isValidFilePath(o)) {
+            RequestBuilder<Drawable> option = Glide.with(activity)
+                    .load(new File(o));
+            try {
+                option = option.apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC));
+            } catch (NoSuchMethodError ignored) {
+            }
+            option
+                    .into(imageView);
             isImageValid = true;
         } else {
             ByteArrayOutputStream stream = Utility.toByteArrayOutputStream(o);
             if (stream != null) {
-                Glide.with(activity)
-                        .load(stream.toByteArray())
+                RequestBuilder<Bitmap> option = Glide.with(activity)
                         .asBitmap()
-                        .listener(new RequestListener<byte[], Bitmap>() {
-                            @Override
-                            public boolean onException(Exception e, byte[] model, Target<Bitmap> target, boolean isFirstResource) {
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onResourceReady(Bitmap resource, byte[] model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                                onTap();
-                                return false;
-                            }
-                        }).into(imageView);
+                        .load(stream.toByteArray());
+                try {
+                    option = option.apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC));
+                } catch (NoSuchMethodError ignored) {
+                }
+                option
+                        .into(imageView);
                 isImageValid = true;
             } else {
                 throw new RuntimeException("Image at position: " + position + " it's not valid image");
             }
 
         }
+
         if (!isImageValid) {
             throw new RuntimeException("Value at position: " + position + " Should be as url string or bitmap object");
         }
+
 
         container.addView(itemView);
 
@@ -125,31 +145,24 @@ public class ViewPagerAdapter extends PagerAdapter {
     }
 
     private void onTap() {
-        mPhotoViewAttacher = new PhotoViewAttacher(imageView);
-
-        mPhotoViewAttacher.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
-            @Override
-            public void onPhotoTap(View view, float x, float y) {
-                if (isShowing) {
-                    isShowing = false;
-                    toolbar.animate().translationY(-toolbar.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
-                    imagesHorizontalList.animate().translationY(imagesHorizontalList.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
-                } else {
-                    isShowing = true;
-                    toolbar.animate().translationY(0).setInterpolator(new DecelerateInterpolator()).start();
-                    imagesHorizontalList.animate().translationY(0).setInterpolator(new DecelerateInterpolator()).start();
-                }
-            }
-
-            @Override
-            public void onOutsidePhotoTap() {
-
+        imageView.getAttacher().setOnPhotoTapListener((view, x, y) -> {
+            Log.e("Photo view", "On tap");
+            if (isShowing) {
+                isShowing = false;
+                topView.animate().translationY(-topView.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
+                bottomView.animate().translationY(bottomView.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
+                imagesHorizontalList.animate().translationY(imagesHorizontalList.getBottom()).setInterpolator(new AccelerateInterpolator()).start();
+            } else {
+                isShowing = true;
+                topView.animate().translationY(0).setInterpolator(new DecelerateInterpolator()).start();
+                bottomView.animate().translationY(0).setInterpolator(new DecelerateInterpolator()).start();
+                imagesHorizontalList.animate().translationY(0).setInterpolator(new DecelerateInterpolator()).start();
             }
         });
     }
 
     @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((RelativeLayout) object);
     }
 

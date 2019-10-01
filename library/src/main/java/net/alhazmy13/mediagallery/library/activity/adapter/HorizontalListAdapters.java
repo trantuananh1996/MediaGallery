@@ -1,16 +1,21 @@
 package net.alhazmy13.mediagallery.library.activity.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import net.alhazmy13.mediagallery.library.R;
 import net.alhazmy13.mediagallery.library.Utility;
@@ -28,6 +33,7 @@ public class HorizontalListAdapters extends RecyclerView.Adapter<HorizontalListA
     private final Context mContext;
     private int mSelectedItem = -1;
     private final OnImgClick mClickListner;
+    private String auth;
 
     /**
      * Instantiates a new Horizontal list adapters.
@@ -37,13 +43,15 @@ public class HorizontalListAdapters extends RecyclerView.Adapter<HorizontalListA
      * @param imgClick    the img click
      * @param placeHolder the place holder
      */
-    public HorizontalListAdapters(Context activity, ArrayList<String> images, OnImgClick imgClick, int placeHolder) {
+    public HorizontalListAdapters(Context activity, ArrayList<String> images, OnImgClick imgClick, int placeHolder, String auth) {
         this.mContext = activity;
         this.mDataset = images;
         this.mClickListner = imgClick;
+        this.auth = auth;
         this.placeHolder = placeHolder;
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_image_horizontal, null));
@@ -54,19 +62,31 @@ public class HorizontalListAdapters extends RecyclerView.Adapter<HorizontalListA
         String o = mDataset.get(holder.getAdapterPosition());
         boolean isValidImage;
         if (Utility.isValidURL(o)) {
-            Glide.with(mContext)
-                    .load(String.valueOf(o))
-                    .placeholder(placeHolder == -1 ? R.drawable.media_gallery_placeholder : placeHolder)
+            if (holder.image != null) Glide.with(mContext)
+                    .load(Utility.getAuthorizedUrl(String.valueOf(o), auth))
+                    .apply(new RequestOptions().placeholder(placeHolder == -1 ? R.drawable.media_gallery_placeholder : placeHolder).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
                     .into(holder.image);
-            isValidImage =true;
+            if (o.contains("gs://")) {
+                StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(o);
+                Glide.with(mContext)
+                        .load(storageRef)
+                        .apply(new RequestOptions().placeholder(placeHolder == -1 ? R.drawable.media_gallery_placeholder : placeHolder).diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
+                        .into(holder.image);
+            }
+
+
+            isValidImage = true;
         } else {
 
             ByteArrayOutputStream stream = Utility.toByteArrayOutputStream(o);
             if (stream != null) {
                 Glide.with(mContext)
-                        .load(stream.toByteArray())
                         .asBitmap()
-                        .placeholder(placeHolder == -1 ? R.drawable.media_gallery_placeholder : placeHolder)
+                        .load(stream.toByteArray())
+                        .apply(new RequestOptions()
+                                .placeholder(placeHolder == -1 ? R.drawable.media_gallery_placeholder : placeHolder)
+                                .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
+                        )
                         .into(holder.image);
                 isValidImage = true;
             } else {
@@ -74,7 +94,7 @@ public class HorizontalListAdapters extends RecyclerView.Adapter<HorizontalListA
 
             }
         }
-        if(!isValidImage){
+        if (!isValidImage) {
             throw new RuntimeException("Value at position: " + position + " Should be as url string or bitmap object");
         }
         ColorMatrix matrix = new ColorMatrix();
@@ -92,12 +112,7 @@ public class HorizontalListAdapters extends RecyclerView.Adapter<HorizontalListA
             holder.image.setAlpha(1f);
         }
 
-        holder.image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mClickListner.onClick(holder.getAdapterPosition());
-            }
-        });
+        holder.image.setOnClickListener(view -> mClickListner.onClick(holder.getAdapterPosition()));
     }
 
     @Override
@@ -133,6 +148,7 @@ public class HorizontalListAdapters extends RecyclerView.Adapter<HorizontalListA
         ViewHolder(View itemView) {
             super(itemView);
             image = (ImageView) itemView.findViewById(R.id.iv);
+            if(image==null) image = itemView.findViewById(R.id.image);
         }
     }
 

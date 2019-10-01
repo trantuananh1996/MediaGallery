@@ -1,10 +1,11 @@
 package net.alhazmy13.mediagallery;
 
 import android.graphics.Bitmap;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.util.Base64;
-import android.widget.LinearLayout;
 
 import net.alhazmy13.mediagallery.library.activity.MediaGallery;
 import net.alhazmy13.mediagallery.library.views.MediaGalleryView;
@@ -15,20 +16,20 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements MediaGalleryView.OnImageClicked {
     ArrayList<String> list;
     private static final String TAG = "MainActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         list = getFakeList();
 
-        MediaGalleryView view = (MediaGalleryView) findViewById(R.id.gallery);
+        MediaGalleryView view = findViewById(R.id.gallery);
         view.setImages(list);
         view.setOnImageClickListener(this);
-        view.setPlaceHolder(R.drawable.media_gallery_placeholder);
+        view.setPlaceHolder(R.mipmap.ic_launcher);
         view.setOrientation(MediaGalleryView.HORIZONTAL);
 //        view.setImageSize(500,MediaGalleryView.DEFAULT);
         view.notifyDataSetChanged();
-
 
 
     }
@@ -57,18 +58,17 @@ public class MainActivity extends AppCompatActivity implements MediaGalleryView.
 
     @Override
     public void onImageClicked(int pos) {
-        MediaGallery.Builder(this,list)
-                .title("Media Gallery")
+        MediaGallery.Builder(this, list)
                 .backgroundColor(R.color.white)
-                .placeHolder(R.drawable.media_gallery_placeholder)
+                .placeHolder(R.mipmap.ic_launcher)
                 .selectedImagePosition(pos)
                 .show();
     }
 
-    public String bitMapToString(Bitmap bitmap){
-        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG,100, baos);
-        byte [] b=baos.toByteArray();
+    public String bitMapToString(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] b = baos.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);
     }
 }

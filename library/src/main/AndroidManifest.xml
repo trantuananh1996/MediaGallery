@@ -1,9 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.alhazmy13.mediagallery.library">
+
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <application >
-        <activity android:name=".activity.MediaGalleryActivity"/>
+    <application>
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+        <activity
+            android:name=".activity.MediaGalleryActivity"
+            android:theme="@style/AppTheme.MediaGalleryToolbar" />
     </application>
 
 </manifest>
