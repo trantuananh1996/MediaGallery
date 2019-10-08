@@ -14,6 +14,7 @@ import androidx.annotation.StringRes;
 import net.alhazmy13.mediagallery.library.BottomViewContainer;
 import net.alhazmy13.mediagallery.library.Constants;
 import net.alhazmy13.mediagallery.library.MenuHandler;
+import net.alhazmy13.mediagallery.library.Utility;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -83,6 +84,7 @@ public class MediaGallery {
         this.showDownload = showDownload;
         return this;
     }
+
     public MediaGallery setShowHorizontalList(boolean showHorizontalList) {
         this.showHorizontalList = showHorizontalList;
         return this;
@@ -97,7 +99,7 @@ public class MediaGallery {
     private String validateImageUrl(String url) {
         if (TextUtils.isEmpty(url)) return "";
         url = url.replace(" ", "%20");
-        if (url.contains("http") ||url.contains("gs://")) return url;
+        if (url.contains("http") || url.contains("gs://")) return url;
         if (url.startsWith("/")) url = url.replaceFirst("/", "");
         if (baseUrl.endsWith("/"))
             return baseUrl + url;
@@ -110,7 +112,9 @@ public class MediaGallery {
         List<String> mData = new ArrayList<>(mDataset);
         mDataset.clear();
         for (String string : mData) {
-            mDataset.add(validateImageUrl(string));
+            if (!Utility.isValidFilePath(string))
+                mDataset.add(validateImageUrl(string));
+            else mDataset.add(string);
         }
 
         bundle.putStringArrayList(Constants.IMAGES, mDataset);
