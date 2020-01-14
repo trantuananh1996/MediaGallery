@@ -29,7 +29,15 @@ abstract class BaseActivity extends SwipeBackActivity {
     @ColorRes
     protected int backgroundColor = -1;
     @ColorRes
-    protected int buttonColor = -1;
+    protected int allButtonColor = -1;
+    @ColorRes
+    private int closeButtonColor = -1;
+    @ColorRes
+    private int nextButtonColor = -1;
+    @ColorRes
+    private int prevButtonColor = -1;
+    @ColorRes
+    private int downloadButtonColor = -1;
     @DrawableRes
     protected int placeHolder;
     protected int selectedImagePosition;
@@ -39,6 +47,8 @@ abstract class BaseActivity extends SwipeBackActivity {
     protected String auth;
     protected boolean showDownload = true;
     protected boolean showHorizontalList = false;
+    protected String baseUrl;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,12 +77,17 @@ abstract class BaseActivity extends SwipeBackActivity {
         dataSet = bundle.getStringArrayList(Constants.IMAGES);
         auth = bundle.getString(AUTHORIZATION);
         backgroundColor = bundle.getInt(Constants.BACKGROUND_COLOR, -1);
-        buttonColor = bundle.getInt(Constants.BUTTON_COLOR, -1);
+        allButtonColor = bundle.getInt(Constants.BUTTON_COLOR, -1);
+        closeButtonColor = bundle.getInt(Constants.CLOSE_BUTTON_COLOR, -1);
+        nextButtonColor = bundle.getInt(Constants.NEXT_BUTTON_COLOR, -1);
+        prevButtonColor = bundle.getInt(Constants.PREV_BUTTON_COLOR, -1);
+        downloadButtonColor = bundle.getInt(Constants.DOWNLOAD_BUTTON_COLOR, -1);
         placeHolder = bundle.getInt(Constants.PLACE_HOLDER, -1);
         selectedImagePosition = bundle.getInt(Constants.SELECTED_IMAGE_POSITION, 0);
         saveImageTitle = bundle.getInt(Constants.SAVE_IMAGE_TITLE, 0);
         showDownload = bundle.getBoolean(Constants.SHOW_DOWNLOAD, true);
         showHorizontalList = bundle.getBoolean(Constants.SHOW_HORIZONTAL_LIST, false);
+        baseUrl = bundle.getString(Constants.BASE_URL, "");
     }
 
 

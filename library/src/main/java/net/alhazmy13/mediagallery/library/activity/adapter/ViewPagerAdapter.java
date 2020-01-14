@@ -85,7 +85,6 @@ public class ViewPagerAdapter extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         View itemView = mLayoutInflater.inflate(R.layout.pager_item, container, false);
         String o = mDataSet.get(position);
-        Log.e("Image loading", o);
         boolean isImageValid;
         imageView = itemView.findViewById(R.id.iv);
         if (bottomViewContainer != null)
@@ -146,7 +145,6 @@ public class ViewPagerAdapter extends PagerAdapter {
 
     private void onTap() {
         imageView.getAttacher().setOnPhotoTapListener((view, x, y) -> {
-            Log.e("Photo view", "On tap");
             if (isShowing) {
                 isShowing = false;
                 topView.animate().translationY(-topView.getBottom()).setInterpolator(new AccelerateInterpolator()).start();

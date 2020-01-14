@@ -40,7 +40,15 @@ public class MediaGallery {
     @ColorRes
     private int mBackgroundColor = -1;
     @ColorRes
-    private int buttonColor = -1;
+    private int allButtonColor = -1;
+    @ColorRes
+    private int closeButtonColor = -1;
+    @ColorRes
+    private int nextButtonColor = -1;
+    @ColorRes
+    private int prevButtonColor = -1;
+    @ColorRes
+    private int downloadButtonColor = -1;
     @DrawableRes
     private int mPlaceHolder;
     private BottomViewContainer bottomViewContainer;
@@ -96,7 +104,7 @@ public class MediaGallery {
     }
 
 
-    private String validateImageUrl(String url) {
+    public static String validateImageUrl(String baseUrl, String url) {
         if (TextUtils.isEmpty(url)) return "";
         url = url.replace(" ", "%20");
         if (url.contains("http") || url.contains("gs://")) return url;
@@ -113,17 +121,22 @@ public class MediaGallery {
         mDataset.clear();
         for (String string : mData) {
             if (!Utility.isValidFilePath(string))
-                mDataset.add(validateImageUrl(string));
+                mDataset.add(validateImageUrl(baseUrl, string));
             else mDataset.add(string);
         }
 
         bundle.putStringArrayList(Constants.IMAGES, mDataset);
         bundle.putString(AUTHORIZATION, auth);
         bundle.putInt(Constants.BACKGROUND_COLOR, mBackgroundColor);
-        bundle.putInt(Constants.BUTTON_COLOR, buttonColor);
+        bundle.putInt(Constants.BUTTON_COLOR, allButtonColor);
+        bundle.putInt(Constants.CLOSE_BUTTON_COLOR, closeButtonColor);
+        bundle.putInt(Constants.NEXT_BUTTON_COLOR, nextButtonColor);
+        bundle.putInt(Constants.PREV_BUTTON_COLOR, prevButtonColor);
+        bundle.putInt(Constants.DOWNLOAD_BUTTON_COLOR, downloadButtonColor);
         bundle.putInt(Constants.PLACE_HOLDER, mPlaceHolder);
         bundle.putInt(Constants.SAVE_IMAGE_TITLE, saveImageTitle);
         bundle.putInt(Constants.SELECTED_IMAGE_POSITION, mSelectedImagePosition);
+        bundle.putString(Constants.BASE_URL, baseUrl);
         bundle.putBoolean(Constants.SHOW_DOWNLOAD, showDownload);
         bundle.putBoolean(Constants.SHOW_HORIZONTAL_LIST, showHorizontalList);
         BaseActivity.bottomViewContainer = bottomViewContainer;
@@ -148,7 +161,27 @@ public class MediaGallery {
     }
 
     public MediaGallery buttonColor(int buttonColor) {
-        this.buttonColor = buttonColor;
+        this.allButtonColor = buttonColor;
+        return this;
+    }
+
+    public MediaGallery closeButtonColor(int buttonColor) {
+        this.closeButtonColor = buttonColor;
+        return this;
+    }
+
+    public MediaGallery nextButtonColor(int buttonColor) {
+        this.nextButtonColor = buttonColor;
+        return this;
+    }
+
+    public MediaGallery prevButtonColor(int buttonColor) {
+        this.prevButtonColor = buttonColor;
+        return this;
+    }
+
+    public MediaGallery downloadButtonColor(int buttonColor) {
+        this.downloadButtonColor = buttonColor;
         return this;
     }
 

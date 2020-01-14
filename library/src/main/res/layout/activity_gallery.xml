@@ -29,7 +29,7 @@
             android:layout_height="50dp"
             android:layout_gravity="start"
             android:padding="10dp"
-            android:src="@drawable/ic_close" />
+            app:srcCompat="@drawable/ic_close" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/prev"
@@ -39,7 +39,7 @@
             android:layout_weight="1"
             android:padding="10dp"
             android:rotation="180"
-            android:src="@drawable/ic_next" />
+            app:srcCompat="@drawable/ic_next" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_count"
@@ -58,7 +58,7 @@
             android:layout_gravity="end"
             android:layout_weight="1"
             android:padding="10dp"
-            android:src="@drawable/ic_next"
+            app:srcCompat="@drawable/ic_next"
             app:tint="@color/white" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -67,8 +67,7 @@
             android:layout_height="50dp"
             android:layout_gravity="end"
             android:padding="10dp"
-            android:src="@drawable/ic_download"
-            app:tint="@color/white" />
+            app:srcCompat="@drawable/ic_download" />
     </LinearLayout>
 
     <RelativeLayout
@@ -76,6 +75,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/imagesHorizontalList"
         android:layout_width="match_parent"

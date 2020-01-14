@@ -3,7 +3,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-    <application>
+    <application android:requestLegacyExternalStorage="true">
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />

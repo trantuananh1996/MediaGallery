@@ -34,8 +34,7 @@ public class CustomViewPager extends ViewPager {
     public boolean onTouchEvent(MotionEvent ev) {
         try {
             return super.onTouchEvent(ev);
-        } catch (IllegalArgumentException ex) {
-            ex.printStackTrace();
+        } catch (IllegalArgumentException ignored) {
         }
         return false;
     }
@@ -44,8 +43,7 @@ public class CustomViewPager extends ViewPager {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         try {
             return super.onInterceptTouchEvent(ev);
-        } catch (IllegalArgumentException ex) {
-            ex.printStackTrace();
+        } catch (IllegalArgumentException ignored) {
         }
         return false;
     }

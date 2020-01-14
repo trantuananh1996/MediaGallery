@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.webkit.URLUtil;
 
 import com.pr.swalert.toast.ToastUtils;
@@ -61,8 +62,9 @@ public class SaveImageHelper {
     }
 
 
-    public void saveImage(String url, String auth) {
+    public void saveImage(String baseUrl, String url, String auth) {
         if (checkIfDownloadManagerEnabled(activity)) {
+            url = MediaGallery.validateImageUrl(baseUrl, url);
             DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url)).addRequestHeader("Authorization", auth);
             request.setDescription("");
             String fileName = URLUtil.guessFileName(url, null, null);
@@ -72,15 +74,17 @@ public class SaveImageHelper {
                     DownloadManager.Request.NETWORK_MOBILE)
                     .setAllowedOverRoaming(false);
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-            request.setDestinationInExternalPublicDir("/Pictures", fileName);
+            try {
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, fileName);
+            } catch (Throwable e) {
+                request.setDestinationInExternalPublicDir("/Pictures", fileName);
+            }
             DownloadManager manager = (DownloadManager) activity.getApplicationContext().getSystemService(Context.DOWNLOAD_SERVICE);
             if (manager != null) {
                 manager.enqueue(request);
             }
         }
     }
-
-
 
 
 }

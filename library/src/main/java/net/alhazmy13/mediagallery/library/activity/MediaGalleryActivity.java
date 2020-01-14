@@ -109,11 +109,11 @@ public class MediaGalleryActivity extends BaseActivity implements ViewPager.OnPa
         if (backgroundColor != -1) {
             mMainLayout.setBackgroundColor(ContextCompat.getColor(this, backgroundColor));
         }
-        if (buttonColor != -1) {
-            int color = ContextCompat.getColor(this, buttonColor);
+        if (allButtonColor != -1) {
+            int color = ContextCompat.getColor(this, allButtonColor);
             ImageViewCompat.setImageTintList(next, ColorStateList.valueOf(color));
             ImageViewCompat.setImageTintList(prev, ColorStateList.valueOf(color));
-            ImageViewCompat.setImageTintList(download, ColorStateList.valueOf(color));
+//            ImageViewCompat.setImageTintList(download, ColorStateList.valueOf(color));
             ImageViewCompat.setImageTintList(close, ColorStateList.valueOf(color));
             tvCount.setTextColor(color);
         }
@@ -160,7 +160,7 @@ public class MediaGalleryActivity extends BaseActivity implements ViewPager.OnPa
         ToastUtils.alertYesNo(MediaGalleryActivity.this, saveImageTitle, yesButtonConfirmed -> {
             if (yesButtonConfirmed) {
                 if (isStoragePermissionGranted(MediaGalleryActivity.this))
-                    new SaveImageHelper(MediaGalleryActivity.this).saveImage(dataSet.get(selectedImagePosition), auth);
+                    new SaveImageHelper(MediaGalleryActivity.this).saveImage(baseUrl, dataSet.get(selectedImagePosition), auth);
             }
         });
     }
@@ -242,8 +242,11 @@ public class MediaGalleryActivity extends BaseActivity implements ViewPager.OnPa
             prev.setVisibility(View.VISIBLE);
             next.setVisibility(View.VISIBLE);
         }
-        if (bottomViewContainer != null)
-            bottomViewContainer.onValidateView(MediaGalleryActivity.this, bottomView, position);
+        try {
+            if (bottomViewContainer != null)
+                bottomViewContainer.onValidateView(MediaGalleryActivity.this, bottomView, position);
+        } catch (AbstractMethodError ignored) {
+        }
     }
 
 
