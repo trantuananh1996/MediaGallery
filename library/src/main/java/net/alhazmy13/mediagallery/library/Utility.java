@@ -22,6 +22,7 @@ import java.net.URL;
 
 public final class Utility {
     public static GlideUrl getAuthorizedUrl(String url, String auth) {
+        if (url.contains("amazonaws.com")) return new GlideUrl(url);
         LazyHeaders.Builder lazyHeaders = new LazyHeaders.Builder();
         if (!TextUtils.isEmpty(auth)) lazyHeaders.addHeader("Authorization", auth);
         return new GlideUrl(url,
