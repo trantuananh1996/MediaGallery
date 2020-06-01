@@ -10,7 +10,7 @@ public interface MenuHandler {
     @MenuRes
     int getMenuId();
 
-    void onMenuItemClick(MenuItem item);
+    void onMenuItemClick(MenuItem item, int selectedImagePosition);
 
     void onMenuCreated(Menu menu);
 }

@@ -176,7 +176,7 @@ public class MediaGalleryActivity extends BaseActivity implements ViewPager.OnPa
             if (item.getItemId() == 1)
                 downloadImage();
             else
-                menuHandler.onMenuItemClick(item);
+                menuHandler.onMenuItemClick(item, selectedImagePosition);
             return true;
         });
         popup.show();
