@@ -24,9 +24,9 @@ import static net.alhazmy13.mediagallery.library.activity.BaseActivity.isStorage
  */
 
 public class SaveImageHelper {
-    private Activity activity;
+    private final MediaGalleryActivity activity;
 
-    public SaveImageHelper(Activity activity) {
+    public SaveImageHelper(MediaGalleryActivity activity) {
         this.activity = activity;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             isStoragePermissionGranted(activity);
@@ -81,7 +81,7 @@ public class SaveImageHelper {
             }
             DownloadManager manager = (DownloadManager) activity.getApplicationContext().getSystemService(Context.DOWNLOAD_SERVICE);
             if (manager != null) {
-                manager.enqueue(request);
+                activity.downloadID = manager.enqueue(request);
             }
         }
     }

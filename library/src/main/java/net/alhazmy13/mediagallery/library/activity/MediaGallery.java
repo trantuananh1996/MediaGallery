@@ -34,8 +34,8 @@ public class MediaGallery {
         return Base64.encodeToString(b, Base64.DEFAULT);
     }
 
-    private Context mActivity;
-    private ArrayList<String> mDataset;
+    private final Context context;
+    private final ArrayList<String> mDataset;
     private int mSelectedImagePosition;
     @ColorRes
     private int mBackgroundColor = -1;
@@ -70,7 +70,7 @@ public class MediaGallery {
 
     private MediaGallery(Context context, ArrayList<String> imagesList) {
         this.mDataset = imagesList;
-        this.mActivity = context;
+        this.context = context;
     }
 
     public MediaGallery backgroundColor(@ColorRes int color) {
@@ -115,7 +115,7 @@ public class MediaGallery {
     }
 
     public void show() {
-        Intent intent = new Intent(mActivity, MediaGalleryActivity.class);
+        Intent intent = new Intent(context, MediaGalleryActivity.class);
         Bundle bundle = new Bundle();
         List<String> mData = new ArrayList<>(mDataset);
         mDataset.clear();
@@ -142,7 +142,12 @@ public class MediaGallery {
         BaseActivity.bottomViewContainer = bottomViewContainer;
         BaseActivity.menuHandler = menuHandler;
         intent.putExtras(bundle);
-        mActivity.startActivity(intent);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        try {
+            context.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

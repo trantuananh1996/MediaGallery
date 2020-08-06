@@ -24,8 +24,8 @@ import java.util.ArrayList;
 
 public class GridImagesAdapter extends RecyclerView.Adapter<GridImagesAdapter.ViewHolder> {
     private static final String TAG = "GridImagesAdapter";
-    private ArrayList<String> mDataset;
-    private Context mContext;
+    private final ArrayList<String> mDataset;
+    private final Context mContext;
     private Drawable imgPlaceHolderResId;
     private MediaGalleryView.OnImageClicked mClickListener;
     private int mHeight;
@@ -117,7 +117,7 @@ public class GridImagesAdapter extends RecyclerView.Adapter<GridImagesAdapter.Vi
 
         ViewHolder(View itemView) {
             super(itemView);
-            image = (ImageView) itemView.findViewById(R.id.imageView);
+            image = itemView.findViewById(R.id.imageView);
         }
     }
 

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="w_download_manager_disabled">Android Download Manager has been turned off. Turn it on and try again.</string>
+    <string name="download">Download</string>
+    <string name="ask_perrmission">Application needs following permissions to work normally: %s. Allow application to use those permissions?</string>
+    <string name="download_success">Downloaded successfully</string>
+
+</resources>

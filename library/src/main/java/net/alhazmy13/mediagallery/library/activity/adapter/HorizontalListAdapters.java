@@ -33,7 +33,7 @@ public class HorizontalListAdapters extends RecyclerView.Adapter<HorizontalListA
     private final Context mContext;
     private int mSelectedItem = -1;
     private final OnImgClick mClickListner;
-    private String auth;
+    private final String auth;
 
     /**
      * Instantiates a new Horizontal list adapters.
@@ -147,7 +147,7 @@ public class HorizontalListAdapters extends RecyclerView.Adapter<HorizontalListA
          */
         ViewHolder(View itemView) {
             super(itemView);
-            image = (ImageView) itemView.findViewById(R.id.iv);
+            image = itemView.findViewById(R.id.iv);
             if(image==null) image = itemView.findViewById(R.id.image);
         }
     }

@@ -1,7 +1,16 @@
 package net.alhazmy13.mediagallery.library.activity;
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.os.Build;
+import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.ContextCompat;
@@ -20,6 +31,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.github.chrisbanes.photoview.PhotoView;
+import com.github.florent37.runtimepermission.PermissionResult;
+import com.github.florent37.runtimepermission.RuntimePermission;
 import com.pr.swalert.toast.ToastUtils;
 
 import net.alhazmy13.mediagallery.library.R;
@@ -27,7 +40,10 @@ import net.alhazmy13.mediagallery.library.activity.adapter.CustomViewPager;
 import net.alhazmy13.mediagallery.library.activity.adapter.HorizontalListAdapters;
 import net.alhazmy13.mediagallery.library.activity.adapter.ViewPagerAdapter;
 
+import java.util.List;
 import java.util.Locale;
+
+import es.dmoral.toasty.Toasty;
 
 import static net.alhazmy13.mediagallery.library.Utility.getStatusbarHeight;
 
@@ -46,6 +62,32 @@ public class MediaGalleryActivity extends BaseActivity implements ViewPager.OnPa
     ImageView close, download, next, prev;
 
     private boolean showMenu = false;
+
+
+    public long downloadID;
+    private final BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //Fetching the download id received with the broadcast
+            long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+            //Checking if the received broadcast is for our enqueued download by matching download id
+            if (downloadID == id) {
+                Toasty.success(MediaGalleryActivity.this, getString(R.string.download_success)).show();
+            }
+        }
+    };
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+    }
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(onDownloadComplete);
+        super.onDestroy();
+    }
 
     @Override
     protected int getResourceLayoutId() {
@@ -159,11 +201,58 @@ public class MediaGalleryActivity extends BaseActivity implements ViewPager.OnPa
     void downloadImage() {
         ToastUtils.alertYesNo(MediaGalleryActivity.this, saveImageTitle, yesButtonConfirmed -> {
             if (yesButtonConfirmed) {
-                if (isStoragePermissionGranted(MediaGalleryActivity.this))
-                    new SaveImageHelper(MediaGalleryActivity.this).saveImage(baseUrl, dataSet.get(selectedImagePosition), auth);
+                askPermission()
+                        .onAccepted(result -> new SaveImageHelper(MediaGalleryActivity.this).saveImage(baseUrl, dataSet.get(selectedImagePosition), auth))
+                        .ask();
             }
         });
     }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    public RuntimePermission askPermission(String... permissions) {
+        if (permissions == null || permissions.length == 0) {
+            permissions = new String[2];
+            permissions[0] = Manifest.permission.READ_EXTERNAL_STORAGE;
+            permissions[1] = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        }
+        return RuntimePermission.askPermission(this, permissions)
+                .onDenied(this::onDeniedPermissions)
+                .onForeverDenied(this::onForeverDeniedPermissions);
+    }
+
+    private void onDeniedPermissions(PermissionResult result) {
+        StringBuilder denied = getPermissionsString(result, result.getDenied());
+        ToastUtils.alertYesNo(this, String.format(getString(R.string.ask_perrmission), denied.toString()), yesButtonConfirmed -> {
+            if (yesButtonConfirmed) {
+                result.askAgain();
+            }
+        });
+    }
+
+    private void onForeverDeniedPermissions(PermissionResult result) {
+        StringBuilder denied = getPermissionsString(result, result.getForeverDenied());
+        ToastUtils.alertYesNo(this, String.format(getString(R.string.ask_perrmission), denied.toString()), yesButtonConfirmed -> {
+            if (yesButtonConfirmed) {
+                result.goToSettings();
+            }
+        });
+    }
+
+    @NonNull
+    private StringBuilder getPermissionsString(PermissionResult result, List<String> foreverDenied) {
+        StringBuilder denied = new StringBuilder();
+        for (String permission : foreverDenied) {
+            try {
+                denied.append("- ").append(getPackageManager().getPermissionInfo(permission, 0).loadLabel(getPackageManager()));
+                if (result.getDenied().indexOf(permission) != result.getDenied().size() - 1)
+                    denied.append("\n");
+            } catch (PackageManager.NameNotFoundException e) {
+
+            }
+        }
+        return denied;
+    }
+
 
     @Override
     public void showMenu() {

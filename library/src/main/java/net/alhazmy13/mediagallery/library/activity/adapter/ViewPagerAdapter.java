@@ -38,14 +38,14 @@ import java.util.ArrayList;
  */
 public class ViewPagerAdapter extends PagerAdapter {
 
-    private Activity activity;
-    private LayoutInflater mLayoutInflater;
-    private ArrayList<String> mDataSet;
+    private final Activity activity;
+    private final LayoutInflater mLayoutInflater;
+    private final ArrayList<String> mDataSet;
     private boolean isShowing = true;
-    private RelativeLayout bottomView;
+    private final RelativeLayout bottomView;
     private PhotoView imageView;
-    private View topView;
-    private BottomViewContainer bottomViewContainer;
+    private final View topView;
+    private final BottomViewContainer bottomViewContainer;
     String auth;
     RecyclerView imagesHorizontalList;
 
