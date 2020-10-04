@@ -3,7 +3,6 @@ package net.alhazmy13.mediagallery.library;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Base64;
 
@@ -42,8 +41,8 @@ public final class Utility {
 
     public static boolean isValidFilePath(String path) {
         try {
-            Uri.fromFile(new File(path));
-            return true;
+            File f = new File(path);
+            return f.exists();
         } catch (Exception exception) {
             return false;
         }
