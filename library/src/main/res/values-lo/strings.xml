@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="w_download_manager_disabled">Trình quản lí tải xuống trên điện thoại của bạn đang bị tắt. Bật lại rồi thử lại sau</string>
+    <string name="w_download_manager_disabled">ຕົວຈັດການການດາວໂຫຼດຂອງໂທລະສັບຂອງທ່ານຖືກປິດໃຊ້ງານ. ເປີດມັນຄືນແລ້ວລອງໃໝ່ໃນພາຍຫຼັງ</string>
     <string name="download">ດາວໂຫຼດ</string>
     <string name="ask_perrmission">ແອັບພລິເຄຊັນຕ້ອງການການອະນຸຍາດຕໍ່ໄປນີ້ເພື່ອເຮັດວຽກຕາມປົກກະຕິ: %s. ອະນຸຍາດໃຫ້ແອັບພລິເຄຊັນໃຊ້ສິດອະນຸຍາດເຫຼົ່ານັ້ນບໍ?</string>
     <string name="download_success">ດາວໂຫຼດສຳເລັດແລ້ວ</string>
