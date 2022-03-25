@@ -76,10 +76,10 @@ afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
-//                from components.release
                 groupId = 'com.github.trantuananh1996' //your git id
                 artifactId = 'library' //your-repository
                 version = '1.2.0' // As same as the Tag
+                artifact(bundleReleaseAar)
             }
         }
     }
