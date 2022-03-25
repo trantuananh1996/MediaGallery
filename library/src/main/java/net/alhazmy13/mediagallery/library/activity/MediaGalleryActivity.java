@@ -1,5 +1,7 @@
 package net.alhazmy13.mediagallery.library.activity;
 
+import static net.alhazmy13.mediagallery.library.Utility.getStatusbarHeight;
+
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.DownloadManager;
@@ -44,8 +46,6 @@ import java.util.List;
 import java.util.Locale;
 
 import es.dmoral.toasty.Toasty;
-
-import static net.alhazmy13.mediagallery.library.Utility.getStatusbarHeight;
 
 
 /**

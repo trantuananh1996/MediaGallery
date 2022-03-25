@@ -1,5 +1,7 @@
 package net.alhazmy13.mediagallery.library.activity;
 
+import static net.alhazmy13.mediagallery.library.Constants.AUTHORIZATION;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -20,8 +22,6 @@ import net.alhazmy13.mediagallery.library.Constants;
 import net.alhazmy13.mediagallery.library.MenuHandler;
 
 import java.util.ArrayList;
-
-import static net.alhazmy13.mediagallery.library.Constants.AUTHORIZATION;
 
 
 abstract class BaseActivity extends SwipeBackActivity {

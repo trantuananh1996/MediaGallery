@@ -1,18 +1,19 @@
 package net.alhazmy13.mediagallery.library.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 
+import com.akexorcist.localizationactivity.ui.LocalizationActivity;
+
 import net.alhazmy13.mediagallery.library.R;
 
 /**
  * Created by Eric on 15/3/3.
  */
-public class SwipeBackActivity extends AppCompatActivity implements SwipeBackLayout.SwipeBackListener {
+public class SwipeBackActivity extends LocalizationActivity implements SwipeBackLayout.SwipeBackListener {
 
     private static final SwipeBackLayout.DragEdge DEFAULT_DRAG_EDGE = SwipeBackLayout.DragEdge.LEFT;
 
