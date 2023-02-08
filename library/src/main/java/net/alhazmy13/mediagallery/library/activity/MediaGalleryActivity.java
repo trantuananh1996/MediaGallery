@@ -3,7 +3,6 @@ package net.alhazmy13.mediagallery.library.activity;
 import static net.alhazmy13.mediagallery.library.Utility.getStatusbarHeight;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -42,8 +41,10 @@ import net.alhazmy13.mediagallery.library.activity.adapter.CustomViewPager;
 import net.alhazmy13.mediagallery.library.activity.adapter.HorizontalListAdapters;
 import net.alhazmy13.mediagallery.library.activity.adapter.ViewPagerAdapter;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
 
@@ -64,15 +65,16 @@ public class MediaGalleryActivity extends BaseActivity implements ViewPager.OnPa
     private boolean showMenu = false;
 
 
-    public long downloadID;
+    public Map<Long, String> mapDownload = new HashMap<>();
     private final BroadcastReceiver onDownloadComplete = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             //Fetching the download id received with the broadcast
             long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
             //Checking if the received broadcast is for our enqueued download by matching download id
-            if (downloadID == id) {
+            if (mapDownload.get(id) != null) {
                 Toasty.success(MediaGalleryActivity.this, getString(R.string.download_success)).show();
+                mapDownload.remove(id);
             }
         }
     };
@@ -105,7 +107,6 @@ public class MediaGalleryActivity extends BaseActivity implements ViewPager.OnPa
     }
 
     private void setupViewPager() {
-
         mViewPager.setAdapter(new ViewPagerAdapter(this, dataSet, bottomView, topView, bottomViewContainer, imagesHorizontalList, auth));
         hAdapter = new HorizontalListAdapters(this, dataSet, this, placeHolder, auth);
         imagesHorizontalList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -155,7 +156,6 @@ public class MediaGalleryActivity extends BaseActivity implements ViewPager.OnPa
             int color = ContextCompat.getColor(this, allButtonColor);
             ImageViewCompat.setImageTintList(next, ColorStateList.valueOf(color));
             ImageViewCompat.setImageTintList(prev, ColorStateList.valueOf(color));
-//            ImageViewCompat.setImageTintList(download, ColorStateList.valueOf(color));
             ImageViewCompat.setImageTintList(close, ColorStateList.valueOf(color));
             tvCount.setTextColor(color);
         }
@@ -189,33 +189,24 @@ public class MediaGalleryActivity extends BaseActivity implements ViewPager.OnPa
         }
     }
 
-//    private void handleMenu() {
-//        if (menuHandler == null) {
-//            download.setOnClickListener(view -> downloadImage());
-//            return;
-//        }
-//        download.setImageResource(R.drawable.ic_menu);
-//        download.setOnClickListener(v -> showMenu());
-//    }
-
     void downloadImage() {
-        ToastUtils.alertYesNo(MediaGalleryActivity.this, saveImageTitle, yesButtonConfirmed -> {
-            if (yesButtonConfirmed) {
+        ToastUtils.alertYesNo(MediaGalleryActivity.this, "Bạn có chắc muốn tải ảnh không", yesButtonConfirmed -> {
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                 askPermission()
-                        .onAccepted(result -> new SaveImageHelper(MediaGalleryActivity.this).saveImage(baseUrl, dataSet.get(selectedImagePosition), auth))
+                        .onAccepted(result -> startDownload())
                         .ask();
+            } else {
+                startDownload();
             }
         });
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
-    public RuntimePermission askPermission(String... permissions) {
-        if (permissions == null || permissions.length == 0) {
-            permissions = new String[2];
-            permissions[0] = Manifest.permission.READ_EXTERNAL_STORAGE;
-            permissions[1] = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-        }
-        return RuntimePermission.askPermission(this, permissions)
+    void startDownload() {
+        new SaveImageHelper(MediaGalleryActivity.this).saveImage(baseUrl, dataSet.get(selectedImagePosition), auth);
+    }
+
+    public RuntimePermission askPermission() {
+        return RuntimePermission.askPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .onDenied(this::onDeniedPermissions)
                 .onForeverDenied(this::onForeverDeniedPermissions);
     }

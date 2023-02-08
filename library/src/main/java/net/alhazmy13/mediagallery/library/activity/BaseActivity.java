@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.ColorRes;
@@ -57,9 +56,7 @@ abstract class BaseActivity extends SwipeBackActivity {
         setDragEdge(SwipeBackLayout.DragEdge.BOTTOM);
         initBase();
         onCreateActivity();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(Color.parseColor("#000000"));
-        }
+        getWindow().setStatusBarColor(Color.parseColor("#000000"));
     }
 
     protected void showMenu() {

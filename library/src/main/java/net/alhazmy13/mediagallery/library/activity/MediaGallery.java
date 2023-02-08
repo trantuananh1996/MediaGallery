@@ -1,5 +1,7 @@
 package net.alhazmy13.mediagallery.library.activity;
 
+import static net.alhazmy13.mediagallery.library.Constants.AUTHORIZATION;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,8 +22,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.alhazmy13.mediagallery.library.Constants.AUTHORIZATION;
-
 
 public class MediaGallery {
     private String baseUrl;
@@ -35,7 +35,7 @@ public class MediaGallery {
     }
 
     private final Context context;
-    private final ArrayList<String> mDataset;
+    private final List<String> mDataset;
     private int mSelectedImagePosition;
     @ColorRes
     private int mBackgroundColor = -1;
@@ -57,7 +57,7 @@ public class MediaGallery {
     private MenuHandler menuHandler;
     private boolean showHorizontalList = false;
 
-    public static MediaGallery Builder(Context activity, ArrayList<String> imagesURLs) {
+    public static MediaGallery Builder(Context activity, List<String> imagesURLs) {
         return new MediaGallery(activity, imagesURLs);
     }
 
@@ -68,7 +68,7 @@ public class MediaGallery {
     }
 
 
-    private MediaGallery(Context context, ArrayList<String> imagesList) {
+    private MediaGallery(Context context, List<String> imagesList) {
         this.mDataset = imagesList;
         this.context = context;
     }
@@ -124,8 +124,7 @@ public class MediaGallery {
                 mDataset.add(validateImageUrl(baseUrl, string));
             else mDataset.add(string);
         }
-
-        bundle.putStringArrayList(Constants.IMAGES, mDataset);
+        bundle.putStringArrayList(Constants.IMAGES, new ArrayList<>(mDataset));
         bundle.putString(AUTHORIZATION, auth);
         bundle.putInt(Constants.BACKGROUND_COLOR, mBackgroundColor);
         bundle.putInt(Constants.BUTTON_COLOR, allButtonColor);

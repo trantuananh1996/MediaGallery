@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,7 +84,6 @@ public class ViewPagerAdapter extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         View itemView = mLayoutInflater.inflate(R.layout.pager_item, container, false);
         String o = mDataSet.get(position);
-        boolean isImageValid;
         imageView = itemView.findViewById(R.id.iv);
         if (bottomViewContainer != null)
             imageView.setRotation(bottomViewContainer.getImageRotation(position));
@@ -103,7 +101,6 @@ public class ViewPagerAdapter extends PagerAdapter {
             } catch (NoSuchMethodError ignored) {
             }
             option.into(imageView);
-            isImageValid = true;
         } else if (Utility.isValidFilePath(o)) {
             RequestBuilder<Drawable> option = Glide.with(activity)
                     .load(new File(o));
@@ -113,7 +110,6 @@ public class ViewPagerAdapter extends PagerAdapter {
             }
             option
                     .into(imageView);
-            isImageValid = true;
         } else {
             ByteArrayOutputStream stream = Utility.toByteArrayOutputStream(o);
             if (stream != null) {
@@ -126,20 +122,12 @@ public class ViewPagerAdapter extends PagerAdapter {
                 }
                 option
                         .into(imageView);
-                isImageValid = true;
             } else {
                 throw new RuntimeException("Image at position: " + position + " it's not valid image");
             }
-
         }
-
-        if (!isImageValid) {
-            throw new RuntimeException("Value at position: " + position + " Should be as url string or bitmap object");
-        }
-
 
         container.addView(itemView);
-
         return itemView;
     }
 
@@ -163,6 +151,5 @@ public class ViewPagerAdapter extends PagerAdapter {
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((RelativeLayout) object);
     }
-
 
 }

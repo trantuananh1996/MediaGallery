@@ -14,6 +14,7 @@ import net.alhazmy13.mediagallery.library.R;
 import net.alhazmy13.mediagallery.library.views.adapter.GridImagesAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by alhazmy13 on 2/12/17.
@@ -75,7 +76,7 @@ public class MediaGalleryView extends RecyclerView {
         mDataset = new ArrayList<>();
         //TODO:
         String auth = "";
-        mAdapter = new GridImagesAdapter(mContext, mDataset, mPlaceHolder,auth);
+        mAdapter = new GridImagesAdapter(mContext, mDataset, mPlaceHolder, auth);
         setOrientation(mOrientation);
         mAdapter.setImageSize(mWidth, mHeight);
         setAdapter(mAdapter);
@@ -86,7 +87,7 @@ public class MediaGalleryView extends RecyclerView {
      *
      * @param itemList the item list
      */
-    public void setImages(ArrayList<String> itemList) {
+    public void setImages(List<String> itemList) {
         this.mDataset.clear();
         this.mDataset.addAll(itemList);
     }
