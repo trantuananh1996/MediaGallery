@@ -43,6 +43,9 @@ android {
         mavenCentral()
         maven { url "https://jitpack.io" }
     }
+
+    namespace 'net.alhazmy13.mediagallery'
+
 }
 
 dependencies {
