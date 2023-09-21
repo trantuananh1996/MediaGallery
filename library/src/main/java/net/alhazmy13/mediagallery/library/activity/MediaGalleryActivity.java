@@ -202,6 +202,7 @@ public class MediaGalleryActivity extends BaseActivity implements ViewPager.OnPa
     }
 
     void startDownload() {
+        if (dataSet.size() <= selectedImagePosition) selectedImagePosition = dataSet.size() - 1;
         new SaveImageHelper(MediaGalleryActivity.this).saveImage(baseUrl, dataSet.get(selectedImagePosition), auth);
     }
 
