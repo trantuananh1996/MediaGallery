@@ -13,12 +13,12 @@ ext {
 }
 
 android {
-    compileSdk 34
+    compileSdk 33
 
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 34
+        targetSdkVersion 33
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -67,9 +67,9 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-storage:8.0.2'
 
     // architecture comp. navigation
-    implementation 'androidx.navigation:navigation-fragment:2.7.2'
-    implementation 'androidx.navigation:navigation-ui:2.7.2'
-    implementation 'androidx.navigation:navigation-runtime:2.7.2'
+    implementation 'androidx.navigation:navigation-fragment:2.3.4'
+    implementation 'androidx.navigation:navigation-ui:2.3.4'
+    implementation 'androidx.navigation:navigation-runtime:2.3.4'
     implementation 'com.github.trantuananh1996:RuntimePermission:1.1.4'
     implementation 'com.akexorcist:localization:1.2.11'
     implementation 'com.blankj:utilcodex:1.31.1'
