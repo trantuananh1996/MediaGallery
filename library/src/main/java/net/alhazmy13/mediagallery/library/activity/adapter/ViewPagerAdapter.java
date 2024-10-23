@@ -18,7 +18,9 @@ import androidx.viewpager.widget.PagerAdapter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.signature.ObjectKey;
 import com.github.chrisbanes.photoview.PhotoView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -90,6 +92,12 @@ public class ViewPagerAdapter extends PagerAdapter {
         onTap();
         if (Utility.isValidURL(o)) {
             RequestBuilder<Drawable> option = Glide.with(activity)
+                    .asDrawable()
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .error(R.drawable.media_gallery_no_image)
+                    .fallback(R.drawable.media_gallery_no_image)
+                    .signature(new ObjectKey(String.valueOf(mDataSet.get(position))))
+                    .timeout(30000)
                     .load(Utility.getAuthorizedUrl(String.valueOf(mDataSet.get(position)), auth));
             if (o.contains("gs://")) {
                 StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(o);

@@ -14,7 +14,6 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 
-import com.jaeger.library.StatusBarUtil;
 
 import net.alhazmy13.mediagallery.library.BottomViewContainer;
 import net.alhazmy13.mediagallery.library.Constants;
@@ -52,7 +51,8 @@ abstract class BaseActivity extends SwipeBackActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getResourceLayoutId());
-        StatusBarUtil.setTranslucentForImageViewInFragment(this, 0, null);
+        //TODO: Dont know what this line for
+//        StatusBarUtil.setTranslucentForImageViewInFragment(this, 0, null);
         setDragEdge(SwipeBackLayout.DragEdge.BOTTOM);
         initBase();
         onCreateActivity();

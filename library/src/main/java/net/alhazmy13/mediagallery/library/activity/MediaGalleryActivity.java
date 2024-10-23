@@ -82,7 +82,7 @@ public class MediaGalleryActivity extends BaseActivity implements ViewPager.OnPa
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        registerReceiver(onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        ContextCompat.registerReceiver(this, onDownloadComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), ContextCompat.RECEIVER_EXPORTED);
     }
 
     @Override
@@ -190,7 +190,8 @@ public class MediaGalleryActivity extends BaseActivity implements ViewPager.OnPa
     }
 
     void downloadImage() {
-        ToastUtils.alertYesNo(MediaGalleryActivity.this, "Bạn có chắc muốn tải ảnh không", yesButtonConfirmed -> {
+        ToastUtils.alertYesNo(MediaGalleryActivity.this, saveImageTitle, yesButtonConfirmed -> {
+            if (!yesButtonConfirmed) return;
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                 askPermission()
                         .onAccepted(result -> startDownload())

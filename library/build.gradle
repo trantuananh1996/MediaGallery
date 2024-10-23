@@ -14,7 +14,9 @@ ext {
 
 android {
     compileSdk 33
-
+    buildFeatures {
+        buildConfig true
+    }
 
     defaultConfig {
         minSdkVersion 21
@@ -57,10 +59,12 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     implementation 'com.github.bumptech.glide:annotations:4.16.0'
-    implementation 'com.github.trantuananh1996:sweetAlert:1.1.2'
+//    implementation 'com.github.trantuananh1996:sweetAlert:1.1.2'
+    implementation project(path: ':sweetAlert')
+
     implementation 'com.jsibbold:zoomage:1.3.1'
 //    implementation 'com.github.liuguangqiang.swipeback:library:1.0.2@aar'
-    implementation 'com.jaeger.statusbarutil:library:1.5.1'
+//    implementation 'com.jaeger.statusbarutil:library:1.5.1'
 
     implementation 'com.github.chrisbanes:PhotoView:2.1.3'
     implementation 'com.google.firebase:firebase-storage:20.2.1'
@@ -71,7 +75,6 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.3.4'
     implementation 'androidx.navigation:navigation-runtime:2.3.4'
     implementation 'com.github.trantuananh1996:RuntimePermission:1.1.4'
-    implementation 'com.akexorcist:localization:1.2.11'
     implementation 'com.blankj:utilcodex:1.31.1'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.21'

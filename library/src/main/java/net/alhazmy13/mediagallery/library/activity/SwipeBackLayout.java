@@ -19,7 +19,6 @@ package net.alhazmy13.mediagallery.library.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -197,7 +196,6 @@ public class SwipeBackLayout extends ViewGroup {
 
     public void setEnablePullToBack(boolean b) {
         enablePullToBack = b;
-        Log.i(TAG, "enablePullToBack:" + enablePullToBack);
     }
 
     private void ensureTarget() {
